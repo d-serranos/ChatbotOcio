@@ -1,0 +1,57 @@
+# ==========================================
+# Entornos de Python / FastAPI / Colab
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+.pytest_cache/
+.coverage
+
+# ==========================================
+# Frontend Node.js / Vue.js / Vite
+# ==========================================
+node_modules/
+dist/
+dist-zip/
+.output/
+.nuxt/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================================
+# Variables de entorno y secretos (¡NUNCA SUBIR!)
+# ==========================================
+.env
+.env.local
+.env.*.local
+
+# ==========================================
+# Kiro y Editores de código
+# ==========================================
+.kiro
+.kiro/scratch/
+.kiro/chats/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# ==========================================
+# Archivos del sistema operativo y Jupyter / Colab
+# ==========================================
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
