@@ -34,7 +34,6 @@ yarn-error.log*
 # ==========================================
 # Kiro y Editores de código
 # ==========================================
-.kiro
 .kiro/scratch/
 .kiro/chats/
 .vscode/*
