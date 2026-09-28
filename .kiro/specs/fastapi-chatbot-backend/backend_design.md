@@ -1,4 +1,4 @@
-# Design Document: FastAPI Chatbot Backend
+﻿# Design Document: FastAPI Chatbot Backend
 
 ## Overview
 
@@ -119,7 +119,7 @@ graph TB
 
 ### 1. Database Models (SQLAlchemy ORM)
 
-**Module:** `app/models/database.py`
+**Module:** `backend/app/models/database.py`
 
 All models use SQLAlchemy ORM with relationships defined for cascade operations.
 
@@ -231,7 +231,7 @@ class ConsumoToken(Base):
 
 ### 2. Pydantic Schemas
 
-**Module:** `app/schemas/`
+**Module:** `backend/app/schemas/`
 
 Pydantic models for request validation and response serialization.
 
@@ -374,7 +374,7 @@ class StatisticsResponse(BaseModel):
 
 ### 3. Authentication Service
 
-**Module:** `app/services/auth_service.py`
+**Module:** `backend/app/services/auth_service.py`
 
 Handles user registration, login, password hashing, and JWT token generation.
 
@@ -452,7 +452,7 @@ class AuthService:
 
 ### 4. Authorization Dependencies
 
-**Module:** `app/dependencies/auth_dependencies.py`
+**Module:** `backend/app/dependencies/auth_dependencies.py`
 
 FastAPI dependencies for extracting and validating JWT tokens.
 
@@ -519,7 +519,7 @@ async def get_optional_user(
 
 ### 5. Media CRUD Service
 
-**Module:** `app/services/media_service.py`
+**Module:** `backend/app/services/media_service.py`
 
 Handles CRUD operations for movies and videogames with validation and filtering.
 
@@ -693,7 +693,7 @@ class MediaService:
 
 ### 6. Chat Service and Colab Integration
 
-**Module:** `app/services/chat_service.py`
+**Module:** `backend/app/services/chat_service.py`
 
 Handles chat message processing, Colab API integration, conversation persistence, and token tracking.
 
@@ -864,7 +864,7 @@ class ChatService:
 
 ### 7. Statistics Service
 
-**Module:** `app/services/statistics_service.py`
+**Module:** `backend/app/services/statistics_service.py`
 
 Aggregates token consumption data by date and user.
 
@@ -972,7 +972,7 @@ class StatisticsService:
 
 ### 8. API Routers
 
-**Module:** `app/routers/`
+**Module:** `backend/app/routers/`
 
 FastAPI routers organize endpoints by resource type.
 
@@ -1201,7 +1201,7 @@ erDiagram
 
 ### Global Exception Handlers
 
-**Module:** `app/middleware/error_handlers.py`
+**Module:** `backend/app/middleware/error_handlers.py`
 
 ```python
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -1434,7 +1434,7 @@ Manual testing verifies user experience and edge cases.
 
 ## Environment Configuration
 
-**Module:** `app/config/settings.py`
+**Module:** `backend/app/config/settings.py`
 
 Pydantic Settings for environment-based configuration.
 
@@ -1527,90 +1527,96 @@ DEBUG=false
 ## Project Structure
 
 ```
-chatbot-backend/
-├── app/
-│   ├── __init__.py
-│   ├── main.py                      # FastAPI app initialization
-│   │
-│   ├── config/
+ChatbotOcio/                         # Project root
+├── backend/                          # Backend directory (FastAPI)
+│   ├── app/
 │   │   ├── __init__.py
-│   │   └── settings.py              # Environment configuration
+│   │   ├── main.py                      # FastAPI app initialization
+│   │   │
+│   │   ├── config/
+│   │   │   ├── __init__.py
+│   │   │   └── settings.py              # Environment configuration
+│   │   │
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   └── database.py              # SQLAlchemy ORM models
+│   │   │
+│   │   ├── schemas/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_schemas.py          # Auth request/response schemas
+│   │   │   ├── movie_schemas.py         # Movie schemas
+│   │   │   ├── videogame_schemas.py     # Videogame schemas
+│   │   │   ├── chat_schemas.py          # Chat schemas
+│   │   │   └── statistics_schemas.py    # Statistics schemas
+│   │   │
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_service.py          # Authentication logic
+│   │   │   ├── media_service.py         # Movie/videogame CRUD
+│   │   │   ├── chat_service.py          # Chat and Colab integration
+│   │   │   └── statistics_service.py    # Statistics aggregation
+│   │   │
+│   │   ├── routers/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_router.py           # /auth endpoints
+│   │   │   ├── movies_router.py         # /movies endpoints
+│   │   │   ├── videogames_router.py     # /videogames endpoints
+│   │   │   ├── chat_router.py           # /chat endpoint
+│   │   │   └── statistics_router.py     # /statistics endpoint
+│   │   │
+│   │   ├── dependencies/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_dependencies.py     # JWT validation dependencies
+│   │   │   └── database_dependencies.py # Database session dependency
+│   │   │
+│   │   ├── middleware/
+│   │   │   ├── __init__.py
+│   │   │   ├── error_handlers.py        # Global exception handlers
+│   │   │   └── cors_middleware.py       # CORS configuration
+│   │   │
+│   │   └── utils/
+│   │       ├── __init__.py
+│   │       └── logger.py                # Logging configuration
 │   │
-│   ├── models/
+│   ├── tests/
 │   │   ├── __init__.py
-│   │   └── database.py              # SQLAlchemy ORM models
+│   │   ├── conftest.py                  # Pytest fixtures
+│   │   │
+│   │   ├── unit/
+│   │   │   ├── __init__.py
+│   │   │   ├── test_auth_service.py
+│   │   │   ├── test_media_service.py
+│   │   │   ├── test_chat_service.py
+│   │   │   ├── test_statistics_service.py
+│   │   │   └── test_schemas.py
+│   │   │
+│   │   └── integration/
+│   │       ├── __init__.py
+│   │       ├── test_auth_flow.py
+│   │       ├── test_movie_crud.py
+│   │       ├── test_videogame_crud.py
+│   │       ├── test_chat_flow.py
+│   │       └── test_statistics_flow.py
 │   │
-│   ├── schemas/
-│   │   ├── __init__.py
-│   │   ├── auth_schemas.py          # Auth request/response schemas
-│   │   ├── movie_schemas.py         # Movie schemas
-│   │   ├── videogame_schemas.py     # Videogame schemas
-│   │   ├── chat_schemas.py          # Chat schemas
-│   │   └── statistics_schemas.py    # Statistics schemas
-│   │
-│   ├── services/
-│   │   ├── __init__.py
-│   │   ├── auth_service.py          # Authentication logic
-│   │   ├── media_service.py         # Movie/videogame CRUD
-│   │   ├── chat_service.py          # Chat and Colab integration
-│   │   └── statistics_service.py    # Statistics aggregation
-│   │
-│   ├── routers/
-│   │   ├── __init__.py
-│   │   ├── auth_router.py           # /auth endpoints
-│   │   ├── movies_router.py         # /movies endpoints
-│   │   ├── videogames_router.py     # /videogames endpoints
-│   │   ├── chat_router.py           # /chat endpoint
-│   │   └── statistics_router.py     # /statistics endpoint
-│   │
-│   ├── dependencies/
-│   │   ├── __init__.py
-│   │   ├── auth_dependencies.py     # JWT validation dependencies
-│   │   └── database_dependencies.py # Database session dependency
-│   │
-│   ├── middleware/
-│   │   ├── __init__.py
-│   │   ├── error_handlers.py        # Global exception handlers
-│   │   └── cors_middleware.py       # CORS configuration
-│   │
-│   └── utils/
-│       ├── __init__.py
-│       └── logger.py                # Logging configuration
+│   ├── .env                             # Environment variables (not in git)
+│   ├── .env.example                     # Environment template
+│   ├── .gitignore
+│   ├── requirements.txt                 # Python dependencies
+│   ├── README.md
+│   ├── Dockerfile                       # Docker configuration
+│   ├── docker-compose.yml               # Docker Compose for local development
+│   └── alembic/                         # Database migrations (optional)
+│       ├── alembic.ini
+│       ├── env.py
+│       └── versions/
 │
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py                  # Pytest fixtures
-│   │
-│   ├── unit/
-│   │   ├── __init__.py
-│   │   ├── test_auth_service.py
-│   │   ├── test_media_service.py
-│   │   ├── test_chat_service.py
-│   │   ├── test_statistics_service.py
-│   │   └── test_schemas.py
-│   │
-│   └── integration/
-│       ├── __init__.py
-│       ├── test_auth_flow.py
-│       ├── test_movie_crud.py
-│       ├── test_videogame_crud.py
-│       ├── test_chat_flow.py
-│       └── test_statistics_flow.py
-│
-├── .env                             # Environment variables (not in git)
-├── .env.example                     # Environment template
-├── .gitignore
-├── requirements.txt                 # Python dependencies
-├── README.md
-└── alembic/                         # Database migrations (optional)
-    ├── alembic.ini
-    ├── env.py
-    └── versions/
+├── .gitignore                        # Project-level gitignore
+└── README.md                         # Project documentation
 ```
 
 ### Key Files
 
-**`app/main.py`** - Application entry point:
+**`backend/app/main.py`** - Application entry point:
 ```python
 from fastapi import FastAPI
 from app.routers import auth_router, movies_router, videogames_router, chat_router, statistics_router
@@ -1776,3 +1782,5 @@ pytest-asyncio==0.21.1
    - Horizontal scaling with load balancer
    - Database read replicas for queries
    - Redis for session/caching (future enhancement)
+
+

@@ -1,4 +1,4 @@
-# Implementation Plan: FastAPI Chatbot Backend
+﻿# Implementation Plan: FastAPI Chatbot Backend
 
 ## Overview
 
@@ -9,10 +9,11 @@ The implementation follows a layered architecture: database models, schemas, ser
 ## Tasks
 
 - [ ] 1. Set up project structure and dependencies
-  - Create directory structure: app/, tests/, config files
-  - Create requirements.txt with FastAPI, SQLAlchemy, Pydantic, JWT libraries
-  - Create .env.example template with all required environment variables
-  - Create app/__init__.py and basic main.py with FastAPI initialization
+  - Create backend/ root directory
+  - Create directory structure inside backend/: app/, tests/, config files
+  - Create backend/requirements.txt with FastAPI, SQLAlchemy, Pydantic, JWT libraries
+  - Create backend/.env.example template with all required environment variables
+  - Create backend/app/__init__.py and basic main.py with FastAPI initialization
   - _Requirements: 12.1, 12.8_
 
 - [ ] 2. Implement database models and configuration
@@ -522,3 +523,4 @@ The implementation follows a layered architecture: database models, schemas, ser
   ]
 }
 ```
+

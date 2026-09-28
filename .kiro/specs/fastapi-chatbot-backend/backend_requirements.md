@@ -1,4 +1,4 @@
-# Requirements Document
+﻿# Requirements Document
 
 ## Introduction
 
@@ -179,9 +179,9 @@ This document specifies the requirements for a FastAPI-based chatbot backend sys
 
 #### Acceptance Criteria
 
-1. THE FastAPI application SHALL generate OpenAPI 3.0 specification automatically from route definitions and Pydantic models
-2. THE FastAPI application SHALL expose interactive Swagger UI documentation at /docs endpoint with test request execution capability
-3. THE FastAPI application SHALL expose alternative ReDoc documentation at /redoc endpoint
+1. THE FastAPI application (located in backend/ directory) SHALL generate OpenAPI 3.0 specification automatically from route definitions and Pydantic models
+2. THE FastAPI application (located in backend/ directory) SHALL expose interactive Swagger UI documentation at /docs endpoint with test request execution capability
+3. THE FastAPI application (located in backend/ directory) SHALL expose alternative ReDoc documentation at /redoc endpoint
 4. THE API documentation SHALL include all endpoint paths, HTTP methods, request schemas, response schemas, and status codes
 5. THE API documentation SHALL include authentication requirements for protected endpoints with Bearer token scheme specification
 6. THE API documentation SHALL include example request and response payloads for each endpoint
@@ -216,4 +216,5 @@ This document specifies the requirements for a FastAPI-based chatbot backend sys
 5. WHEN the application starts, THE application SHALL read JWT_EXPIRATION_MINUTES from environment variables with default value 60 and validate it is between 1 and 10080 minutes
 6. WHEN required environment variables (COLAB_API_URL, DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, JWT_SECRET_KEY) are missing, THE application SHALL log error message specifying which variables are missing and exit with code 1
 7. WHEN JWT_EXPIRATION_MINUTES contains invalid value outside range 1-10080, THE application SHALL log error message "JWT_EXPIRATION_MINUTES must be between 1 and 10080" and exit with code 1
-8. WHEN the application starts, THE application SHALL attempt to load environment variables from a .env file in the project root directory before reading from system environment
+8. WHEN the application starts, THE application SHALL attempt to load environment variables from a .env file in the backend/ directory before reading from system environment
+
