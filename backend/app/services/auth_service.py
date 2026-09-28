@@ -1,4 +1,4 @@
-"""Authentication Service"""
+﻿"""Authentication Service"""
 from datetime import datetime, timedelta
 from typing import Dict
 from fastapi import HTTPException
@@ -17,10 +17,13 @@ class AuthService:
     def __init__(self, db: Session, config: Settings):
         self.db = db
         self.config = config
-        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        self.pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
     
     def hash_password(self, password: str) -> str:
         """Hash password using bcrypt"""
+        # Bcrypt has a 72-character limit
+        if len(password) > 72:
+            password = password[:72]
         return self.pwd_context.hash(password)
     
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
@@ -56,8 +59,7 @@ class AuthService:
             correo=user_data.correo,
             clave=self.hash_password(user_data.clave),
             rol=user_data.rol or "user",
-            fecha_registro=datetime.utcnow(),
-            activo=True
+            fecha_registro=datetime.utcnow()
         )
         self.db.add(user)
         self.db.commit()
@@ -70,8 +72,5 @@ class AuthService:
         
         if not user or not self.verify_password(login_data.clave, user.clave):
             raise HTTPException(status_code=401, detail="Invalid email or password")
-        
-        if not user.activo:
-            raise HTTPException(status_code=403, detail="Account is inactive")
-        
+
         return self.create_jwt_token(user.id_usuario, user.rol)

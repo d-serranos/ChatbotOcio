@@ -1,4 +1,4 @@
-"""SQLAlchemy Database Models"""
+﻿"""SQLAlchemy Database Models"""
 from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional
@@ -23,7 +23,6 @@ class Usuario(Base):
     correo: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     clave: Mapped[str] = mapped_column(String(255), nullable=False)
     fecha_registro: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
-    activo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     
     # Relationships
     peliculas: Mapped[List["Pelicula"]] = relationship(back_populates="usuario", cascade="all, delete-orphan")
@@ -48,7 +47,6 @@ class Pelicula(Base):
     duracion_minutos: Mapped[int] = mapped_column(Integer, nullable=False)
     clasificacion: Mapped[str] = mapped_column(String(10), nullable=False)
     fecha_registro: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
-    activo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     
     # Relationships
     usuario: Mapped["Usuario"] = relationship(back_populates="peliculas")
@@ -68,7 +66,6 @@ class Videojuego(Base):
     desarrollador: Mapped[str] = mapped_column(String(200), nullable=False)
     jugadores: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     fecha_registro: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
-    activo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     
     # Relationships
     usuario: Mapped["Usuario"] = relationship(back_populates="videojuegos")

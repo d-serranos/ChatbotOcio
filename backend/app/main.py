@@ -1,7 +1,8 @@
-"""FastAPI Application Entry Point"""
+﻿"""FastAPI Application Entry Point"""
 import sys
 import logging
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import IntegrityError
 
@@ -32,6 +33,16 @@ app = FastAPI(
     title="Chatbot Backend API",
     description="FastAPI backend for chatbot with media catalog management",
     version="1.0.0"
+)
+
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Frontend URLs
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, PUT, DELETE, OPTIONS)
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Register exception handlers
