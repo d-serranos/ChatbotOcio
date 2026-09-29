@@ -46,14 +46,14 @@ class MovieResponse(BaseModel):
     id_pelicula: int
     titulo: str
     genero: str
-    plataforma: str
+    plataforma: Optional[str]
     anio_lanzamiento: int
     director: str
     duracion_minutos: int
     calificacion: Optional[Decimal]
     actores: Optional[str]
-    clasificacion: str
-    productora: str
+    clasificacion: Optional[str]
+    productora: Optional[str]
     fecha_registro: datetime
     
     model_config = ConfigDict(from_attributes=True)

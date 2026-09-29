@@ -1,4 +1,4 @@
-"""Media CRUD Service"""
+﻿"""Media CRUD Service"""
 from datetime import datetime
 from typing import List, Optional, Tuple
 from fastapi import HTTPException
@@ -22,7 +22,7 @@ class MediaService:
             **movie_data.model_dump(),
             id_usuario=user_id,
             fecha_registro=datetime.utcnow(),
-            activo=True
+            activo=1
         )
         self.db.add(movie)
         self.db.commit()
@@ -38,7 +38,7 @@ class MediaService:
         page_size: int = 20
     ) -> Tuple[List[Pelicula], int]:
         """Get all active movies with optional filtering and pagination"""
-        query = self.db.query(Pelicula).filter(Pelicula.activo == True)
+        query = self.db.query(Pelicula).filter(Pelicula.activo == 1)
         
         if genero:
             query = query.filter(Pelicula.genero == genero)
@@ -56,7 +56,7 @@ class MediaService:
         """Get movie by ID"""
         movie = self.db.query(Pelicula).filter(
             Pelicula.id_pelicula == movie_id,
-            Pelicula.activo == True
+            Pelicula.activo == 1
         ).first()
         
         if not movie:
@@ -80,7 +80,7 @@ class MediaService:
     def delete_movie(self, movie_id: int) -> None:
         """Soft delete movie"""
         movie = self.get_movie_by_id(movie_id)
-        movie.activo = False
+        movie.activo = 0
         self.db.commit()
     
     # Videogame operations
@@ -90,7 +90,7 @@ class MediaService:
             **videogame_data.model_dump(),
             id_usuario=user_id,
             fecha_registro=datetime.utcnow(),
-            activo=True
+            activo=1
         )
         self.db.add(videogame)
         self.db.commit()
@@ -102,12 +102,12 @@ class MediaService:
         genero: Optional[str] = None,
         plataforma: Optional[str] = None,
         anio_lanzamiento: Optional[int] = None,
-        clasificacion: Optional[str] = None,
+        calificacion: Optional[float] = None,
         page: int = 1,
         page_size: int = 20
     ) -> Tuple[List[Videojuego], int]:
         """Get all active videogames with optional filtering and pagination"""
-        query = self.db.query(Videojuego).filter(Videojuego.activo == True)
+        query = self.db.query(Videojuego).filter(Videojuego.activo == 1)
         
         if genero:
             # Support comma-separated values
@@ -121,18 +121,8 @@ class MediaService:
         if anio_lanzamiento:
             query = query.filter(Videojuego.anio_lanzamiento == anio_lanzamiento)
         
-        if clasificacion:
-            valid_clasificaciones = ["E", "E10+", "T", "M", "AO", "RP"]
-            clasificaciones = [c.strip() for c in clasificacion.split(',')]
-            
-            for c in clasificaciones:
-                if c not in valid_clasificaciones:
-                    raise HTTPException(
-                        status_code=422,
-                        detail=f"Invalid CLASIFICACION value. Valid values: {', '.join(valid_clasificaciones)}"
-                    )
-            
-            query = query.filter(Videojuego.clasificacion.in_(clasificaciones))
+        if calificacion is not None:
+            query = query.filter(Videojuego.calificacion >= calificacion)
         
         total = query.count()
         videogames = query.offset((page - 1) * page_size).limit(page_size).all()
@@ -143,7 +133,7 @@ class MediaService:
         """Get videogame by ID"""
         videogame = self.db.query(Videojuego).filter(
             Videojuego.id_videojuego == videogame_id,
-            Videojuego.activo == True
+            Videojuego.activo == 1
         ).first()
         
         if not videogame:
@@ -167,5 +157,5 @@ class MediaService:
     def delete_videogame(self, videogame_id: int) -> None:
         """Soft delete videogame"""
         videogame = self.get_videogame_by_id(videogame_id)
-        videogame.activo = False
+        videogame.activo = 0
         self.db.commit()

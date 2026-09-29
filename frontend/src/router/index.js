@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+﻿import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 // Lazy-load views for better performance
@@ -45,6 +45,8 @@ const routes = [
     name: 'catalog-movies',
     component: CatalogMoviesView,
     meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
       title: 'Movies - ChatbotOcio'
     }
   },
@@ -53,6 +55,8 @@ const routes = [
     name: 'catalog-videogames',
     component: CatalogVideogamesView,
     meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
       title: 'Videogames - ChatbotOcio'
     }
   },
@@ -149,3 +153,4 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+

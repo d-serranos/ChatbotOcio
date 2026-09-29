@@ -13,7 +13,7 @@ from app.services.media_service import MediaService
 router = APIRouter(prefix="/videogames", tags=["Videogames"])
 
 
-@router.post("/", response_model=VideogameResponse, status_code=201)
+@router.post("", response_model=VideogameResponse, status_code=201)
 async def create_videogame(
     videogame_data: VideogameCreate,
     current_user: Usuario = Depends(require_admin),
@@ -25,12 +25,12 @@ async def create_videogame(
     return videogame
 
 
-@router.get("/", response_model=List[VideogameResponse])
+@router.get("", response_model=List[VideogameResponse])
 async def get_videogames(
     genero: Optional[str] = None,
     plataforma: Optional[str] = None,
     anio_lanzamiento: Optional[int] = None,
-    clasificacion: Optional[str] = None,
+    calificacion: Optional[float] = None,
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     current_user: Usuario = Depends(require_admin),
@@ -39,7 +39,7 @@ async def get_videogames(
     """Get all videogames with optional filtering (admin only)"""
     service = MediaService(db)
     videogames, total = service.get_videogames(
-        genero, plataforma, anio_lanzamiento, clasificacion, page, page_size
+        genero, plataforma, anio_lanzamiento, calificacion, page, page_size
     )
     return videogames
 

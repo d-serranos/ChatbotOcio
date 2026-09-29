@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <nav class="bg-white shadow-md sticky top-0 z-50" aria-label="Main navigation">
     <div class="container mx-auto px-4">
       <div class="flex justify-between items-center h-16">
@@ -41,6 +41,7 @@
           </router-link>
 
           <router-link
+            v-if="isAdmin"
             to="/catalog/movies"
             class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-2 py-1"
             :class="{ 'text-blue-600': isActiveRoute('/catalog/movies') }"
@@ -56,6 +57,7 @@
           </router-link>
 
           <router-link
+            v-if="isAdmin"
             to="/catalog/videogames"
             class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-2 py-1"
             :class="{ 'text-blue-600': isActiveRoute('/catalog/videogames') }"
@@ -166,6 +168,7 @@
             </router-link>
 
             <router-link
+              v-if="isAdmin"
               to="/catalog/movies"
               class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
               :class="{ 'bg-blue-50 text-blue-600': isActiveRoute('/catalog/movies') }"
@@ -176,6 +179,7 @@
             </router-link>
 
             <router-link
+              v-if="isAdmin"
               to="/catalog/videogames"
               class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
               :class="{ 'bg-blue-50 text-blue-600': isActiveRoute('/catalog/videogames') }"

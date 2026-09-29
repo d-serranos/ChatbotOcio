@@ -14,7 +14,7 @@ from app.services.statistics_service import StatisticsService
 router = APIRouter(prefix="/statistics", tags=["Statistics"])
 
 
-@router.get("/", response_model=StatisticsResponse)
+@router.get("", response_model=StatisticsResponse)
 async def get_statistics(
     start_date: Optional[date] = Query(None, description="Start date (YYYY-MM-DD)"),
     end_date: Optional[date] = Query(None, description="End date (YYYY-MM-DD)"),

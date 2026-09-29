@@ -13,7 +13,7 @@ from app.services.media_service import MediaService
 router = APIRouter(prefix="/movies", tags=["Movies"])
 
 
-@router.post("/", response_model=MovieResponse, status_code=201)
+@router.post("", response_model=MovieResponse, status_code=201)
 async def create_movie(
     movie_data: MovieCreate,
     current_user: Usuario = Depends(require_admin),
@@ -25,7 +25,7 @@ async def create_movie(
     return movie
 
 
-@router.get("/", response_model=List[MovieResponse])
+@router.get("", response_model=List[MovieResponse])
 async def get_movies(
     genero: Optional[str] = None,
     plataforma: Optional[str] = None,

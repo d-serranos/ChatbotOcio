@@ -1,6 +1,7 @@
 """Videogame Request/Response Schemas"""
 import re
 from datetime import date, datetime
+from decimal import Decimal
 from typing import Optional
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 
@@ -11,7 +12,7 @@ class VideogameCreate(BaseModel):
     genero: str = Field(..., max_length=100)
     plataforma: str = Field(..., max_length=100)
     anio_lanzamiento: int = Field(..., ge=1958, le=date.today().year + 5)
-    clasificacion: str = Field(..., pattern="^(E|E10\\+|T|M|AO|RP)$", max_length=10)
+    calificacion: Optional[Decimal] = Field(None, ge=0, le=10, decimal_places=1)
     desarrollador: str = Field(..., max_length=200)
     jugadores: Optional[str] = Field(None, max_length=50)
     
@@ -31,7 +32,7 @@ class VideogameUpdate(BaseModel):
     genero: Optional[str] = Field(None, max_length=100)
     plataforma: Optional[str] = Field(None, max_length=100)
     anio_lanzamiento: Optional[int] = Field(None, ge=1958, le=date.today().year + 5)
-    clasificacion: Optional[str] = Field(None, pattern="^(E|E10\\+|T|M|AO|RP)$", max_length=10)
+    calificacion: Optional[Decimal] = Field(None, ge=0, le=10, decimal_places=1)
     desarrollador: Optional[str] = Field(None, max_length=200)
     jugadores: Optional[str] = Field(None, max_length=50)
 
@@ -43,7 +44,7 @@ class VideogameResponse(BaseModel):
     genero: str
     plataforma: str
     anio_lanzamiento: int
-    clasificacion: str
+    calificacion: Optional[Decimal]
     desarrollador: str
     jugadores: Optional[str]
     fecha_registro: datetime

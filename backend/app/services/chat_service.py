@@ -23,16 +23,22 @@ class ChatService:
         self.colab_api_url = config.colab_api_url
         self.timeout = 30  # seconds
     
-    async def send_to_colab(self, message: str) -> Dict:
+    async def send_to_colab(self, message: str, user_id: Optional[int] = None) -> Dict:
         """Send message to Colab API and return response"""
         if not self.colab_api_url:
             raise HTTPException(status_code=500, detail="Chatbot service not configured")
         
         try:
+            # Preparar payload seg?n formato de Colab API
+            payload = {
+                "pregunta": message,
+                "usuario_id": str(user_id) if user_id else None
+            }
+            
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 response = await client.post(
                     self.colab_api_url,
-                    json={"message": message}
+                    json=payload
                 )
                 
                 if response.status_code != 200:
@@ -92,49 +98,47 @@ class ChatService:
         self.db.refresh(message)
         return message
     
-    def track_tokens(self, message_id: int, token_data: Dict) -> None:
-        """Track token consumption from Colab response"""
+    def track_response_tokens(self, message_id: int, response_content: str) -> None:
+        """Track token consumption for assistant response based on word count"""
         try:
-            # Extract token information from response
-            prompt_tokens = token_data.get("prompt_tokens", 0)
-            completion_tokens = token_data.get("completion_tokens", 0)
-            total_tokens = token_data.get("total_tokens", 0)
+            # Contar palabras en la respuesta del chatbot
+            word_count = len(response_content.split())
             
-            # Validate token values
-            if any(isinstance(t, (int, float)) and (t < 0 or t > 1000000) 
-                   for t in [prompt_tokens, completion_tokens, total_tokens]):
-                logger.warning(f"Invalid token values in response: {token_data}")
-                prompt_tokens = completion_tokens = total_tokens = 0
-            
-            # Store token records
-            for categoria, tokens in [
-                ("prompt_tokens", prompt_tokens),
-                ("completion_tokens", completion_tokens),
-                ("total_tokens", total_tokens)
-            ]:
-                consumo = ConsumoToken(
-                    id_mensaje=message_id,
-                    categoria=categoria,
-                    tokens=int(tokens),
-                    fecha=datetime.utcnow()
-                )
-                self.db.add(consumo)
-            
-            self.db.commit()
-            
-        except Exception as e:
-            # Log error but don't fail the chat response
-            logger.error(f"Failed to track tokens: {str(e)}")
-            
-            # Store unavailable record
+            # Guardar consumo de tokens con categoria "resultado"
             consumo = ConsumoToken(
                 id_mensaje=message_id,
-                categoria="unavailable",
-                tokens=0,
+                categoria="resultado",
+                tokens=word_count,
                 fecha=datetime.utcnow()
             )
             self.db.add(consumo)
             self.db.commit()
+            
+            logger.info(f"Assistant response tokens tracked: {word_count} words")
+            
+        except Exception as e:
+            logger.error(f"Failed to track response tokens: {str(e)}")
+    
+    def track_user_message_tokens(self, message_id: int, message_content: str) -> None:
+        """Track token consumption for user message based on word count"""
+        try:
+            # Contar palabras en el mensaje del usuario
+            word_count = len(message_content.split())
+            
+            # Guardar consumo de tokens con categor?a "general"
+            consumo = ConsumoToken(
+                id_mensaje=message_id,
+                categoria="enviados",
+                tokens=word_count,
+                fecha=datetime.utcnow()
+            )
+            self.db.add(consumo)
+            self.db.commit()
+            
+            logger.info(f"User message tokens tracked: {word_count} words")
+            
+        except Exception as e:
+            logger.error(f"Failed to track user message tokens: {str(e)}")
     
     async def process_chat(self, message: str, user: Optional[Usuario]) -> ChatResponse:
         """Process complete chat flow"""
@@ -147,11 +151,14 @@ class ChatService:
         # Save user message
         user_message = self.save_message(conversation.id_conversacion, "user", message)
         
-        # Send to Colab API
-        colab_response = await self.send_to_colab(message)
+        # Track user message word count as tokens (category: enviados)
+        self.track_user_message_tokens(user_message.id_mensaje, message)
         
-        # Extract chatbot response text
-        response_text = colab_response.get("response", "")
+        # Send to Colab API
+        colab_response = await self.send_to_colab(message, user_id)
+        
+        # Extract chatbot response text from Colab format
+        response_text = colab_response.get("respuesta", "")
         
         # Save assistant message
         assistant_message = self.save_message(
@@ -160,9 +167,8 @@ class ChatService:
             response_text
         )
         
-        # Track token consumption
-        token_data = colab_response.get("usage", {})
-        self.track_tokens(assistant_message.id_mensaje, token_data)
+        # Track response word count as tokens (category: resultado)
+        self.track_response_tokens(assistant_message.id_mensaje, response_text)
         
         return ChatResponse(
             response=response_text,

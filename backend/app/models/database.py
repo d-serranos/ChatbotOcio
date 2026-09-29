@@ -1,4 +1,4 @@
-﻿"""SQLAlchemy Database Models"""
+"""SQLAlchemy Database Models"""
 from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional
@@ -36,16 +36,17 @@ class Pelicula(Base):
     
     id_pelicula: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     id_usuario: Mapped[int] = mapped_column(Integer, ForeignKey("usuario.id_usuario"), nullable=False)
-    productora: Mapped[str] = mapped_column(String(200), nullable=False)
+    productora: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     titulo: Mapped[str] = mapped_column(String(200), nullable=False)
     genero: Mapped[str] = mapped_column(String(100), nullable=False)
-    plataforma: Mapped[str] = mapped_column(String(100), nullable=False)
+    plataforma: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     anio_lanzamiento: Mapped[int] = mapped_column(Integer, nullable=False)
     calificacion: Mapped[Optional[Decimal]] = mapped_column(Numeric(2, 1), nullable=True)
     director: Mapped[str] = mapped_column(String(200), nullable=False)
     actores: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     duracion_minutos: Mapped[int] = mapped_column(Integer, nullable=False)
-    clasificacion: Mapped[str] = mapped_column(String(10), nullable=False)
+    clasificacion: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+    activo: Mapped[int] = mapped_column(Integer, nullable=False, server_default="1")
     fecha_registro: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     
     # Relationships
@@ -62,9 +63,10 @@ class Videojuego(Base):
     genero: Mapped[str] = mapped_column(String(100), nullable=False)
     plataforma: Mapped[str] = mapped_column(String(100), nullable=False)
     anio_lanzamiento: Mapped[int] = mapped_column(Integer, nullable=False)
-    clasificacion: Mapped[str] = mapped_column(String(10), nullable=False)
+    calificacion: Mapped[Optional[Decimal]] = mapped_column(Numeric(2, 1), nullable=True)
     desarrollador: Mapped[str] = mapped_column(String(200), nullable=False)
     jugadores: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    activo: Mapped[int] = mapped_column(Integer, nullable=False, server_default="1")
     fecha_registro: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     
     # Relationships
